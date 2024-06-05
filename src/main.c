@@ -1,23 +1,4 @@
-#include "../inc/main.h"
-
-const uint8_t MAP[MAP_SIZE * MAP_SIZE] = {
-	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-	1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1,
-	1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1,
-	1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1,
-	1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1,
-	1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 1,
-	1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1,
-	1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1,
-	1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1,
-	1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1,
-	1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1,
-	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-	1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1,
-	1, 0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1,
-	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-};
+#include "../headers/main.h"
 
 /**
  * xy2index - Converts 2D coordinates to a 1D array index.
@@ -37,15 +18,15 @@ int xy2index(int x, int y, int w)
  * render - Renders the game.
  * @state: The game state.
  * @player: The player.
+ * @MAP: The map.
  */
 
-void render(State *state, Player *player)
+void render(State *state, Player *player, uint8_t *MAP)
 {
-	int x;
 	int blockSize = MINI_MAP_WIDTH / MAP_SIZE;
 
 	render_sky_ground(state, player);
-	for (x = 0; x < SCREEN_WIDTH; ++x)
+	for (int x = 0; x < SCREEN_WIDTH; ++x)
 	{
 		float cameraX = 2 * x / (float)SCREEN_WIDTH - 1;
 		Vec2F rayDir = {
@@ -67,24 +48,40 @@ void render(State *state, Player *player)
 		Side side;
 
 		calc_step_side(rayDir, &stepDir, &sideDist, &deltaDist, mapBox, player);
-
 		perform_dda(hit, mapBox, sideDist, deltaDist, &perpWallDist,
 				&side, stepDir, MAP);
 		draw(state, player, x, &side, perpWallDist);
 	}
-	draw_mini_map(state, player, MAP, blockSize);
-	draw_rays(state, player, MAP, blockSize);
-
+	if (state->showMiniMap)
+	{
+		draw_mini_map(state, player, MAP, blockSize);
+		draw_rays(state, player, MAP, blockSize);
+	}
 }
 
 /**
  * main - The entry point of the program.
+ * @argc: The number of arguments.
+ * @argv: The arguments.
  *
- * Return: 0 on success, non-zero on failure.
+ * Return: The exit status.
  */
 
-int main(void)
+int main(int argc, char *argv[])
 {
+	if (argc != 2)
+	{
+		fprintf(stderr, "Usage: %s <map_file>\n", argv[0]);
+		return (1);
+	}
+	uint8_t map[MAP_SIZE * MAP_SIZE] = {0};
+	char *map_file_path = argv[1];
+
+	if (parse_map(map_file_path, map))
+	{
+		return (1);
+	}
+
 	ASSERT(!SDL_Init(SDL_INIT_VIDEO),
 			"SDL failed to initialize; %s\n",
 			SDL_GetError());
@@ -99,18 +96,15 @@ int main(void)
 		.plane = {.x = 0.0f, .y = 0.66f},
 		.verticalOffset = 0.0f,
 	};
-
 	int currentWeaponIndex = 0;
 	WeaponData weaponData;
 
 	loadWeaponTexture(&state, &weaponData);
-	events(&state, &player, &currentWeaponIndex, MAP, &weaponData);
-
+	events(&state, &player, &currentWeaponIndex, map, &weaponData);
 	for (int i = 0; i < NUM_WEAPONS; ++i)
-	{
 		SDL_DestroyTexture(weaponData.textures[i]);
-	}
 	SDL_DestroyRenderer(state.renderer);
 	SDL_DestroyWindow(state.window);
+	SDL_Quit();
 	return (0);
 }

@@ -1,4 +1,4 @@
-#include "../inc/main.h"
+#include "../headers/main.h"
 
 /**
  * init - Initializes the game.
@@ -25,6 +25,17 @@ void init(State *state)
 	ASSERT(state->renderer,
 			"failed to create SDL renderer: %s\n",
 			SDL_GetError());
+
+	help(state);
+
+	state->rain = false;
+	for (int i = 0; i < MAX_RAINDROPS; i++)
+	{
+		state->raindrops[i].x = rand() % SCREEN_WIDTH;
+		state->raindrops[i].y = rand() % SCREEN_HEIGHT;
+		state->raindrops[i].z = (float)(rand() % 100) / 100.0f;
+		state->raindrops[i].speed = 0.1f + (float)(rand() % 100) / 500.0f;
+	}
 
 	SDL_SetHint(SDL_HINT_MOUSE_RELATIVE_MODE_WARP, "1");
 	SDL_SetRelativeMouseMode(true);

@@ -1,4 +1,4 @@
-#include "../inc/main.h"
+#include "../headers/main.h"
 
 /**
  * render_sky_ground - Renders the sky and ground.
@@ -70,7 +70,7 @@ void calc_step_side(Vec2F rayDir, Vec2I *stepDir, Vec2F *sideDist,
  */
 
 void perform_dda(bool hit, Vec2I mapBox, Vec2F sideDist, Vec2F deltaDist,
-		float *perpWallDist, Side *side, Vec2I stepDir, const uint8_t *MAP)
+		float *perpWallDist, Side *side, Vec2I stepDir, uint8_t *MAP)
 {
 	while (!hit)
 	{

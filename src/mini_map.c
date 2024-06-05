@@ -1,4 +1,4 @@
-#include "../inc/main.h"
+#include "../headers/main.h"
 
 /**
  * draw_mini_map - Draws the mini-map.
@@ -8,7 +8,7 @@
  * @blockSize: The block size.
  */
 
-void draw_mini_map(State *state, Player *player, const uint8_t *MAP,
+void draw_mini_map(State *state, Player *player, uint8_t *MAP,
 		int blockSize)
 {
 	ColorRGBA RGBA_Yellow = {.r = 0xFF, .g = 0xFF, .b = 0x00, .a = 0xFF};
@@ -60,7 +60,7 @@ void ray_pos(Vec2F rayPos, Vec2F rayDir, Vec2I *mapBox, Vec2F *sideDist,
 }
 
 void hit_wall(bool *hit, Vec2I *mapBox, Vec2F sideDist, Vec2F deltaDist,
-		Vec2I stepDir, const uint8_t *MAP)
+		Vec2I stepDir, uint8_t *MAP)
 {
 	while (!*hit)
 	{
@@ -87,7 +87,7 @@ void hit_wall(bool *hit, Vec2I *mapBox, Vec2F sideDist, Vec2F deltaDist,
  * @blockSize: The block size.
  */
 
-void draw_rays(State *state, Player *player, const uint8_t *MAP, int blockSize)
+void draw_rays(State *state, Player *player, uint8_t *MAP, int blockSize)
 {
 	ColorRGBA RGBA_Red   = {.r = 0xFF, .g = 0x00, .b = 0x00, .a = 0xFF};
 

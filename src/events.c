@@ -1,12 +1,13 @@
-#include "../inc/main.h"
+#include "../headers/main.h"
 
 /**
  * handleKeydownEvent - Handles keydown events.
  * @currentWeaponIndex: The current weapon index.
  * @key: The key pressed.
+ * @state: The game state.
  */
 
-void handleKeydownEvent(int *currentWeaponIndex, SDL_Keycode key)
+void handleKeydownEvent(int *currentWeaponIndex, SDL_Keycode key, State *state)
 {
 	switch (key)
 	{
@@ -21,6 +22,15 @@ void handleKeydownEvent(int *currentWeaponIndex, SDL_Keycode key)
 			break;
 		case SDLK_4:
 			*currentWeaponIndex = 3;
+			break;
+		case SDLK_m:
+			state->showMiniMap = !state->showMiniMap;
+			break;
+		case SDLK_r:
+			state->rain = !state->rain;
+			break;
+		case SDLK_h:
+			state->showHelp = !state->showHelp;
 			break;
 	}
 }
@@ -50,7 +60,7 @@ void handleSDLEvents(State *state, Player *player,
 				player->verticalOffset -= event.motion.yrel;
 				break;
 			case SDL_KEYDOWN:
-				handleKeydownEvent(currentWeaponIndex, event.key.keysym.sym);
+				handleKeydownEvent(currentWeaponIndex, event.key.keysym.sym, state);
 				break;
 		}
 	}
@@ -90,7 +100,7 @@ void rotatePlayer(Player *player, float rotateSpeed, int mouse_xrel)
  * @keystate: The keyboard state.
  */
 
-void movePlayer(Player *player, const uint8_t *MAP,
+void movePlayer(Player *player, uint8_t *MAP,
 		float moveSpeed, const uint8_t *keystate)
 {
 	Vec2F deltaPos = {
@@ -138,11 +148,11 @@ void movePlayer(Player *player, const uint8_t *MAP,
  * Return: The current weapon index.
  */
 
-int events(State *state, Player *player, int *currentWeaponIndex,
-		const uint8_t *MAP, WeaponData *weaponData)
+void events(State *state, Player *player, int *currentWeaponIndex,
+	 uint8_t *MAP, WeaponData *weaponData)
 {
 	const float rotateSpeed = 0.025;
-	const float moveSpeed = 0.05;
+	const float moveSpeed = 0.035;
 
 	while (!state->quit)
 	{
@@ -156,10 +166,11 @@ int events(State *state, Player *player, int *currentWeaponIndex,
 
 		rotatePlayer(player, rotateSpeed, mouse_xrel);
 		movePlayer(player, MAP, moveSpeed, keystate);
-		render(state, player);
+		render(state, player, MAP);
+		render_help(state);
+		updateRain(state);
+		renderRain(state);
 		renderWeapon(state, weaponData, *currentWeaponIndex);
 		SDL_RenderPresent(state->renderer);
 	}
-
-	return (*currentWeaponIndex);
 }

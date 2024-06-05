@@ -1,4 +1,4 @@
-#include "../inc/main.h"
+#include "../headers/main.h"
 
 /**
  * loadWeaponTexture - Loads the weapon texture.
