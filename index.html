@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maze Project</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 text-gray-800">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md">
+      <div
+        class="container mx-auto px-4 py-2 flex justify-between items-center"
+      >
+        <div class="text-2xl font-bold text-blue-500">Maze Project</div>
+        <ul class="flex space-x-4">
+          <li>
+            <a href="#video-demo" class="text-gray-700 hover:text-blue-500"
+              >Video demo</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://github.com/Ibrahim-Naguib/maze"
+              class="text-gray-700 hover:text-blue-500"
+              >GitHub</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-16 text-center">
+      <h1 class="text-5xl font-bold text-blue-500 mb-8">
+        Welcome to the Maze Project
+      </h1>
+      <img
+        src="./assets/screenshot.png"
+        alt="Maze Project Image"
+        class="mx-auto mb-8"
+      />
+      <div class="max-w-2xl mx-auto">
+        <p class="text-xl text-gray-700 mb-4">
+          The goal of this project is to create a 3D maze game using raycasting.
+          You'll develop a game where the camera navigates through walls,
+          starting with SDL2 basics and advancing to textures, enemies, and
+          effects. Follow the tasks, dive into the tutorials, and enjoy the
+          process!
+        </p>
+      </div>
+      <hr class="my-12 border-gray-300" />
+      <div id="video-demo" class="mt-8">
+        <h2 class="text-3xl font-bold text-blue-500 mb-4">Video Demo</h2>
+        <video controls class="mx-auto">
+          <source src="./assets/demo.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-md mt-16 py-4">
+      <div class="container mx-auto px-4 text-center">
+        <p class="text-gray-700">
+          &copy; 2024 Maze Project. All rights reserved.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
